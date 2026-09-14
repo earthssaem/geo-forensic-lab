@@ -328,3 +328,9 @@ button { font-family: inherit; }
 .wdot::after { content: ''; position: absolute; inset: 2px; border-radius: 50%; background: var(--text-3); animation: blink 1.2s infinite alternate; }
 .fig .fc .src { margin-top: 4px; font-family: var(--mono); font-size: 10px; letter-spacing: .04em; color: var(--text-3); }
 @media (min-width: 640px) { .viewport.sm .stage { height: 150px; } }
+
+/* 추론 연결고리 */
+.linkbox { margin-top: 12px; border: 1px solid var(--green-dim); border-left: 4px solid var(--green); background: #0a1a11; padding: 10px 12px; border-radius: 3px; }
+.linkbox .lk { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--green); margin-bottom: 4px; }
+.linkbox .lk .mono { font-size: 9px; letter-spacing: .16em; color: var(--green-dim); margin-left: 6px; }
+.linkbox .lt { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.5; }

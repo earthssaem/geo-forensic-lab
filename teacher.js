@@ -13,9 +13,9 @@
       html += '<section class="panel">' + ph('Case ' + c.no, esc(c.name), esc(c.en) + ' · ' + esc(c.period)) + '<div class="pb"><div class="tgrid">';
       c.evidence.forEach(function (ev) {
         var ans = ''; ev.options.forEach(function (o, i) { if (o.ok) ans = 'ABCD'[i] + '. ' + o.text; });
-        html += '<div class="tcard"><div class="th"><span class="no">E-' + ev.id.slice(1) + '</span><span class="t">' + esc(ev.title) + '<small>' + esc(ev.code) + ' · SAMPLE ' + esc(ev.sample) + (ev.primary ? '' : ' · 2차 증거') + '</small></span>' + (p[ev.code] && p[ev.code].done ? '<span class="tag green">DONE</span>' : '') + '</div>';
+        html += '<div class="tcard"><div class="th"><span class="no">E-' + ev.id.slice(1) + '</span><span class="t">' + esc(ev.title) + '<small>' + esc(ev.code) + ' · SAMPLE ' + esc(ev.sample) + '</small></span>' + (p[ev.code] && p[ev.code].done ? '<span class="tag green">DONE</span>' : '') + '</div>';
         html += '<div class="tb"><div><div class="qr" data-path="#/' + c.id + '/' + ev.id + '"><div class="qrsvg"></div><div class="lbl"></div></div><a class="btn small ghost" style="display:block;text-align:center;margin-top:8px;text-decoration:none" href="' + baseUrl() + '#/' + c.id + '/' + ev.id + '" target="_blank">학생 화면 열기</a></div>';
-        html += '<dl><dt>의뢰 항목 (카드 뒷면)</dt><dd>' + esc(ev.request) + '</dd><dt>QR 퀴즈</dt><dd>' + esc(ev.question) + '</dd><dt>정답</dt><dd class="ans">' + esc(ans) + '</dd><dt>감식 결과</dt><dd><ul>' + ev.result.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></dd><dt>추론 질문</dt><dd><ul>' + ev.inference.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></dd></dl></div></div>';
+        html += '<dl><dt>의뢰 항목 (카드 뒷면)</dt><dd>' + esc(ev.request) + '</dd><dt>QR 퀴즈</dt><dd>' + esc(ev.question) + '</dd><dt>정답</dt><dd class="ans">' + esc(ans) + '</dd><dt>감식 결과</dt><dd><ul>' + ev.result.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></dd><dt>추론 연결고리</dt><dd>' + esc(ev.link || '') + '</dd><dt>추론 질문</dt><dd><ul>' + ev.inference.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul></dd></dl></div></div>';
       });
       html += '</div></div></section>';
     });

@@ -286,26 +286,31 @@
       s += axisText(L, bottom + 16, '◀ 대멸종 이전 (아래 지층)', 'start', 10); s += axisText(W - R, bottom + 16, '대멸종 이후 (위 지층) ▶', 'end', 10);
       s += axisText(W / 2, bottom + 34, '지층 순서 (아래 → 위 = 과거 → 이후)', 'middle', 10);
       s += '</svg>';
-      return { svg: s, cap: '그림. 대멸종 경계 전후 석회암층의 탄소 동위원소비(δ¹³C) 변화. 값이 낮아질수록 탄소-12 비율이 높은 가벼운 탄소가 많이 공급되었음을 뜻한다.', src: '수업용 개념도 — 실제 측정값이 아니라 변화의 방향과 시점만 나타냄' };
+      return { svg: s, cap: '그림. 대멸종 경계 전후 석회암층의 탄소 동위원소비(δ¹³C) 변화. 값이 낮아질수록 탄소-12 비율이 높은 가벼운 탄소가 많이 공급되었음을 뜻한다.' };
     },
-    // 여러 해역 산소 상태
+    // 바닷속 산소 상태 — 감식 항목별 비교표
     c03e03: function () {
-      var sites = ['중국 남부', '이란', '그린란드', '캐나다 서부', '일본(태평양)'];
-      var W = 640, H = 250, L = 120, top = 44, rowH = 34;
+      var W = 640, H = 250, x0 = 30, c1 = 240, c2 = 440, cw = 180, top = 36, rowH = 42;
+      var rows = [['프람보이드 황철석', '드묾', '매우 많음 · 크기 작음'], ['지시 원소 (몰리브데넘 등)', '적음', '많이 쌓임'], ['생흔 화석 (바닥 생물의 흔적)', '많음', '거의 없음']];
       var s = '<svg viewBox="0 0 ' + W + ' ' + H + '"><rect width="' + W + '" height="' + H + '" fill="' + BG + '"/>';
-      var c1 = L + 20, c2 = L + 250; var w1 = 200, w2 = 200;
-      s += label(c1 + w1 / 2, top - 14, '대멸종 이전', 'middle', 11, TXT, 700); s += label(c2 + w2 / 2, top - 14, '대멸종 경계 ~ 직후', 'middle', 11, RED, 700);
-      sites.forEach(function (n, i) {
+      s += label(x0, top - 10, '감식 항목', 'start', 11, TXT2, 700);
+      s += label(c1 + cw / 2, top - 10, '대멸종 이전', 'middle', 11, TXT, 700);
+      s += label(c2 + cw / 2, top - 10, '대멸종 경계 ~ 직후', 'middle', 11, RED, 700);
+      s += '<line x1="' + x0 + '" y1="' + (top - 2) + '" x2="' + (c2 + cw) + '" y2="' + (top - 2) + '" stroke="' + GREY + '"/>';
+      rows.forEach(function (r, i) {
         var y = top + i * rowH;
-        s += label(L - 8, y + 21, n, 'end', 12, TXT, 600);
-        s += '<rect x="' + c1 + '" y="' + (y + 6) + '" width="' + w1 + '" height="22" rx="3" fill="#0d1a13" stroke="' + GREY + '" stroke-width="1.5"/>';
-        s += label(c1 + 10, y + 21, '산소 있음 · 황철석 드묾 · 생물 흔적 많음', 'start', 10, TXT, 500);
-        s += '<rect x="' + c2 + '" y="' + (y + 6) + '" width="' + w2 + '" height="22" rx="3" fill="' + INK + '"/>';
-        s += label(c2 + 10, y + 21, '산소 부족 · 미세 황철석 多 · 흔적 없음', 'start', 10, DARK, 600);
+        s += label(x0, y + 26, r[0], 'start', 12, TXT, 600);
+        s += '<rect x="' + c1 + '" y="' + (y + 8) + '" width="' + cw + '" height="28" rx="3" fill="#0d1a13" stroke="' + GREY + '"/>' + label(c1 + cw / 2, y + 26, r[1], 'middle', 12, TXT, 500);
+        s += '<rect x="' + c2 + '" y="' + (y + 8) + '" width="' + cw + '" height="28" rx="3" fill="rgba(255,77,77,.14)" stroke="' + RED + '"/>' + label(c2 + cw / 2, y + 26, r[2], 'middle', 12, RED, 700);
+        s += '<line x1="' + x0 + '" y1="' + (y + rowH) + '" x2="' + (c2 + cw) + '" y2="' + (y + rowH) + '" stroke="' + SOFT + '" stroke-dasharray="4 4"/>';
       });
-      s += label(L - 8, top + sites.length * rowH + 22, '▶ 서로 멀리 떨어진 여러 해역에서 같은 시기에 산소 부족 상태가 나타난다.', 'start', 11, TXT, 600);
+      var vy = top + rows.length * rowH;
+      s += label(x0, vy + 26, '▶ 바닷속 산소 상태', 'start', 12, TXT, 700);
+      s += '<rect x="' + c1 + '" y="' + (vy + 8) + '" width="' + cw + '" height="28" rx="3" fill="#0d1a13" stroke="' + INK + '"/>' + label(c1 + cw / 2, vy + 26, '산소 있음', 'middle', 12, INK, 700);
+      s += '<rect x="' + c2 + '" y="' + (vy + 8) + '" width="' + cw + '" height="28" rx="3" fill="' + RED + '"/>' + label(c2 + cw / 2, vy + 26, '무산소', 'middle', 12, DARK, 700);
+      s += label(x0, vy + rowH + 24, '확인된 해역: 중국 남부 · 이란 · 그린란드 · 캐나다 서부 · 일본(태평양) — 서로 멀리 떨어진 곳에서 모두 같은 결과', 'start', 11, TXT2, 500);
       s += '</svg>';
-      return { svg: s, cap: '그림. 여러 해역의 페름기 말 퇴적물에서 확인된 바닷속 산소 상태 (황철석 미세 형태와 산화·환원 지시 원소 종합)', src: '수업용 개념도 — 여러 연구의 결론을 정성적으로 정리한 것' };
+      return { svg: s, cap: '그림. 페름기 말 해양 퇴적물의 감식 항목별 비교. 여러 해역에서 같은 시기에 바닷속 산소가 사라졌다.' };
     },
     // 해수 온도 곡선
     c03e04: function () {
@@ -357,7 +362,7 @@
       s += '</g>';
       s += label(qx + qr + 12, qy - 6, '충격 석영 (현미경)', 'start', 11, TXT, 700); s += label(qx + qr + 12, qy + 10, '초고압 충격으로 생긴', 'start', 10, TXT2, 500); s += label(qx + qr + 12, qy + 24, '여러 방향의 미세 줄무늬', 'start', 10, TXT2, 500);
       s += '</svg>';
-      return { svg: s, cap: '그림. (왼쪽) 지역별 충격 물질 퇴적층 두께 비교, (오른쪽) 석영에서 확인된 충격 변형 구조의 모식도', src: '수업용 개념도 — 실제 측정값이 아니라 지역 간 차이의 경향만 나타냄' };
+      return { svg: s, cap: '그림. (왼쪽) 지역별 충격 물질 퇴적층 두께 비교, (오른쪽) 석영에서 확인된 충격 변형 구조의 모식도' };
     },
     // 화석 변화 before/after
     c05e03: function () {
@@ -378,7 +383,7 @@
       });
       s += label(L, bottom + 40, '▶ 해양 플랑크톤과 꽃가루는 급감하고, 양치류 포자의 비율은 일시적으로 크게 증가한다(“양치류 급증”).', 'start', 11, TXT, 600);
       s += '</svg>';
-      return { svg: s, cap: '그림. 경계 직전과 직후의 화석 상대량 변화 (막대 높이는 변화의 방향만 나타냄)', src: '수업용 개념도 — 실제 측정값 아님' };
+      return { svg: s, cap: '그림. 경계 직전과 직후의 화석 상대량 변화 (막대 높이는 변화의 방향만 나타냄)' };
     },
     // 칙술루브 구조 + 연대 일치
     c05e04: function () {

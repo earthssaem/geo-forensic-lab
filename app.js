@@ -112,9 +112,6 @@
     // 01 시료 접수
     html += '<section class="panel done">' + ph('Intake', '시료 접수 완료', 'NO. ' + esc(ev.sample));
     html += '<table class="kv"><tr><th>REQUEST</th><td><b>' + esc(ev.request) + '</b></td></tr><tr><th>SAMPLE</th><td>' + esc(ev.sample) + ' · ' + esc(ev.material) + '<span class="tag fill">' + esc(ev.code) + '</span></td></tr><tr><th>METHOD</th><td><b>' + esc(ev.methodName) + '</b><br><span class="muted" style="font-size:12.5px">' + esc(ev.methodNote) + '</span></td></tr><tr><th>STATUS</th><td id="stcell">' + (st.done ? '<span class="tag green">ANALYSIS COMPLETE · 감식 완료</span>' : '<span class="tag">RECEIVED · 분석 중</span>') + '</td></tr></table>';
-    html += '<details class="obsfold"><summary>현장 관찰 기록 다시 보기 (카드 앞면과 같음) <span class="mono muted">FIELD OBSERVATION</span></summary>';
-    html += '<div class="viewport sm"><div class="stage"><div class="ruler">' + rulerSvg('l') + '</div><div class="ruler r">' + rulerSvg('r') + '</div>' + (SPEC[ev.visual] ? SPEC[ev.visual]() : '') + '<div class="ovl"><i></i></div><div class="beam"></div><div class="readout">SPECIMEN ' + esc(ev.sample) + '</div></div></div>';
-    html += '<div style="padding:0 14px 12px"><ul class="obs">' + ev.observation.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul>' + (ev.note ? '<div class="note" style="margin-top:10px"><b style="font-size:11px;color:var(--text-3);letter-spacing:.1em;font-family:var(--mono)">참고 정보</b><br>' + esc(ev.note) + '</div>' : '') + '<div class="small muted" style="margin-top:8px;font-size:12px">채취: ' + esc(ev.site) + '</div></div></details>';
     html += '</section>';
 
     // 02 결과 — 처음 열 때만 짧은 분석 연출, 그 뒤에는 바로 표시
@@ -137,7 +134,7 @@
   function resultSections(c, ev) {
     var html = '<section class="panel" id="result">' + ph('Lab analysis', '감식 결과', 'FORENSIC RESULT') + '<div class="pb">';
     html += '<div class="okcircle"><div class="c"></div><div class="t">Result · Verified<small>분석 방법 : ' + esc(ev.methodName) + '</small></div></div>';
-    html += '<div class="keybox"><div class="kl">핵심 감식 결과 <span class="mono">KEY FINDING</span></div><div class="kt">' + esc(ev.key) + '</div><div class="kc">→ 이 문장을 최종보고서 「감식 기록」에 옮겨 쓰세요.</div></div>';
+    html += '<div class="keybox"><div class="kl">핵심 감식 결과 <span class="mono">KEY FINDING</span></div><div class="kt">' + esc(ev.key) + '</div></div>';
     if (ev.more && ev.more.length) html += '<div class="morelab">함께 확인된 것</div><ul class="res-list">' + ev.more.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>';
     if (ev.link) html += '<div class="linkbox"><div class="lk">추론 연결고리 <span class="mono">LINK</span></div><div class="lt">' + esc(ev.link) + '</div></div>';
     html += '<div class="fig" id="fig"><div class="ft">Analysis data · 감식 데이터</div><div class="scan"></div><div class="hint">◀ ▶ 그림을 옆으로 밀어 전체를 확인하세요</div><div class="sv" id="figsvg"></div><div class="fc" id="figcap"></div></div>';

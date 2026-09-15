@@ -57,7 +57,7 @@
   function renderHome(focus) {
     var p = loadP();
     var html = labHead(null) + '<main class="wrap">';
-    html += '<div class="hero"><h1>시료 접수 시스템<small>SAMPLE INTAKE · ANALYSIS REQUEST TERMINAL</small></h1><p>증거 카드 뒷면의 QR을 찍으면 그 증거의 분석 페이지가 열립니다. QR이 안 되면 아래에 <b>분석 코드</b>를 입력하세요.</p></div>';
+    html += '<div class="hero"><h1>시료 접수 시스템<small>SAMPLE INTAKE · ANALYSIS REQUEST TERMINAL</small></h1><p>증거 카드 뒷면의 QR을 찍으면 그 증거의 감식 결과 페이지가 열립니다. QR이 안 되면 아래에 <b>분석 코드</b>를 입력하세요.</p></div>';
     html += '<section class="panel">' + ph('Code', '분석 코드 입력', 'ANALYSIS CODE') + '<div class="pb"><form class="codeform" id="codeform"><input id="codein" placeholder="예: CASE03-E01" autocomplete="off" spellcheck="false"><button class="btn small" type="submit">접수 확인</button></form><div id="codemsg" class="attempts" style="margin-top:8px"></div></div></section>';
     D.cases.forEach(function (c, ci) {
       html += '<section class="panel" id="' + c.id + '">' + ph('Case ' + c.no, esc(c.name), esc(c.en)) + '<div class="pb">';
@@ -65,7 +65,7 @@
       html += '<div class="caselist">';
       c.evidence.forEach(function (ev) {
         var done = p[ev.code] && p[ev.code].done;
-        var st = done ? '<span class="st done">감식 완료</span>' : '<span class="st">분석 대기</span>';
+        var st = done ? '<span class="st done">확인 완료</span>' : '<span class="st">확인 전</span>';
         html += '<a class="evrow" href="#/' + c.id + '/' + ev.id + '"><span class="no">E-' + ev.id.slice(1) + '</span><span class="t">' + esc(ev.title) + '<small>' + esc(ev.code) + ' · SAMPLE ' + esc(ev.sample) + '</small></span>' + st + '</a>';
       });
       html += '</div></div></section>';
@@ -93,8 +93,6 @@
   }
 
   /* ── 증거 분석 페이지 ─────────────────── */
-  var LOCK_SVG = '<svg viewBox="0 0 16 16"><path d="M4 7V5a4 4 0 0 1 8 0v2h1v8H3V7h1zm2 0h4V5a2 2 0 0 0-4 0v2z"/></svg>';
-  var OPEN_SVG = '<svg viewBox="0 0 16 16"><path d="M4 7V5a4 4 0 0 1 7.9-.8l-1.9.6A2 2 0 0 0 6 5v2h8v8H2V7h2z"/></svg>';
   function ph(en, ko, right) { return '<div class="ph"><span class="idx"></span>' + en + '<span class="ko">' + ko + '</span><span class="en">' + (right || '') + '</span></div>'; }
   function rulerSvg(side) {
     var s = '<svg viewBox="0 0 26 200" preserveAspectRatio="none">';
@@ -105,102 +103,58 @@
   }
 
   function renderEvidence(c, ev) {
-    var p = loadP(); var st = p[ev.code] || { done: false, tries: 0, rejected: [] };
+    var p = loadP(); var st = p[ev.code] || { done: false };
     var evNo = 'E-' + ev.id.slice(1);
     var html = labHead(c) + '<main class="wrap">';
     html += '<div class="topstrip"><div class="cs">Case ' + c.no + '</div><div class="bc">' + barcode(seedOf(ev.code), 150, 26).replace('style="width:150px;height:26px"', '') + '</div><div class="evtag">Evidence ' + evNo + '</div></div>';
     html += '<div class="evtitle"><div class="no">' + evNo + '</div><div class="t">' + esc(ev.title) + '<small>' + esc(ev.en) + '</small></div></div>';
 
-    // 01 시료 접수 완료 (간결)
+    // 01 시료 접수
     html += '<section class="panel done">' + ph('Intake', '시료 접수 완료', 'NO. ' + esc(ev.sample));
-    html += '<table class="kv"><tr><th>REQUEST</th><td><b>' + esc(ev.request) + '</b></td></tr><tr><th>SAMPLE</th><td>' + esc(ev.sample) + ' · ' + esc(ev.material) + '<span class="tag fill">' + esc(ev.code) + '</span></td></tr><tr><th>STATUS</th><td id="stcell">' + (st.done ? '<span class="tag green">ANALYSIS COMPLETE · 감식 완료</span>' : '<span class="tag">RECEIVED · 분석 방법 승인 대기</span>') + '</td></tr></table>';
+    html += '<table class="kv"><tr><th>REQUEST</th><td><b>' + esc(ev.request) + '</b></td></tr><tr><th>SAMPLE</th><td>' + esc(ev.sample) + ' · ' + esc(ev.material) + '<span class="tag fill">' + esc(ev.code) + '</span></td></tr><tr><th>METHOD</th><td><b>' + esc(ev.methodName) + '</b><br><span class="muted" style="font-size:12.5px">' + esc(ev.methodNote) + '</span></td></tr><tr><th>STATUS</th><td id="stcell">' + (st.done ? '<span class="tag green">ANALYSIS COMPLETE · 감식 완료</span>' : '<span class="tag">RECEIVED · 분석 중</span>') + '</td></tr></table>';
     html += '<details class="obsfold"><summary>현장 관찰 기록 다시 보기 (카드 앞면과 같음) <span class="mono muted">FIELD OBSERVATION</span></summary>';
     html += '<div class="viewport sm"><div class="stage"><div class="ruler">' + rulerSvg('l') + '</div><div class="ruler r">' + rulerSvg('r') + '</div>' + (SPEC[ev.visual] ? SPEC[ev.visual]() : '') + '<div class="ovl"><i></i></div><div class="beam"></div><div class="readout">SPECIMEN ' + esc(ev.sample) + '</div></div></div>';
     html += '<div style="padding:0 14px 12px"><ul class="obs">' + ev.observation.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul>' + (ev.note ? '<div class="note" style="margin-top:10px"><b style="font-size:11px;color:var(--text-3);letter-spacing:.1em;font-family:var(--mono)">참고 정보</b><br>' + esc(ev.note) + '</div>' : '') + '<div class="small muted" style="margin-top:8px;font-size:12px">채취: ' + esc(ev.site) + '</div></div></details>';
     html += '</section>';
 
-    // 02 분석 방법 선택
-    html += '<section class="panel' + (st.done ? ' done' : '') + '" id="quiz">' + ph('Method', '분석 방법 선택', 'METHOD APPROVAL') + '<div class="pb">';
-    html += '<p class="q">' + esc(ev.question) + '</p><p class="q-sub">의뢰 항목 「' + esc(ev.request) + '」에 맞는 분석 방법을 고르세요. 맞지 않으면 연구소가 반려합니다.</p>';
-    html += '<div class="opts" id="opts">';
-    ev.options.forEach(function (o, i) {
-      var cls = 'opt'; var dis = '';
-      if (st.done) { cls += o.ok ? ' correct' : ' rejected'; dis = ' disabled'; }
-      else if (st.rejected.indexOf(i) >= 0) { cls += ' rejected'; dis = ' disabled'; }
-      html += '<button type="button" class="' + cls + '" data-i="' + i + '"' + dis + '><span class="k">' + 'ABCD'[i] + '</span><span>' + esc(o.text) + '</span></button>';
-    });
-    html += '</div>';
-    html += '<div class="actions"><button class="btn" id="submit" disabled>' + (st.done ? '분석 승인 완료' : '분석 의뢰') + '</button><div class="lockind' + (st.done ? ' open' : '') + '" id="lockind">' + (st.done ? OPEN_SVG + 'Unlocked' : LOCK_SVG + 'Locked') + '</div></div>';
-    html += '<div class="attempts" id="tries">' + (st.done ? 'APPROVED · 시도 ' + st.tries + '회' : 'ATTEMPTS · ' + st.tries + ' · 방법을 고른 뒤 「분석 의뢰」를 누르세요') + '</div>';
-    html += '<div id="feedback"></div>';
-    html += '</div></section>';
-
-    // 03·04 결과 영역 — 승인 전에는 내용을 넣지 않음
-    html += '<div id="results">' + (st.done ? resultSections(c, ev) : '<section class="panel"><div class="pb waiting"><div class="wdot"></div><div><b>분석 결과 대기 중</b><small>분석 방법이 승인되면 감식 결과가 여기에 나타납니다.</small></div></div></section>') + '</div>';
+    // 02 결과 — 처음 열 때만 짧은 분석 연출, 그 뒤에는 바로 표시
+    html += '<div id="results">' + (st.done ? resultSections(c, ev) : '<section class="panel"><div class="pb" id="procbox"></div></section>') + '</div>';
 
     html += footNav('<a href="#/' + c.id + '" style="margin-right:12px">CASE ' + c.no + ' 증거 목록</a>');
     html += '</main>';
     app.innerHTML = html;
 
     if (st.done) { drawVisual(ev, false); return; }
-
-    var sel = -1; var submit = document.getElementById('submit'); var opts = document.getElementById('opts');
-    opts.addEventListener('click', function (e) {
-      var b = e.target.closest('.opt'); if (!b || b.disabled) return;
-      Array.prototype.forEach.call(opts.querySelectorAll('.opt'), function (x) { x.classList.remove('sel'); });
-      b.classList.add('sel'); sel = +b.getAttribute('data-i'); submit.disabled = false;
-      document.getElementById('feedback').innerHTML = '';
-    });
-    submit.addEventListener('click', function () {
-      if (sel < 0) return;
-      var o = ev.options[sel]; st.tries++;
-      var fb = document.getElementById('feedback');
-      if (o.ok) {
-        st.done = true; p[ev.code] = st; saveP(p);
-        submit.disabled = true; submit.textContent = '분석 진행 중';
-        Array.prototype.forEach.call(opts.querySelectorAll('.opt'), function (x, i) { x.disabled = true; x.classList.remove('sel'); x.classList.add(ev.options[i].ok ? 'correct' : 'rejected'); });
-        document.getElementById('tries').textContent = 'APPROVED · 시도 ' + st.tries + '회';
-        runAnalysis(fb, ev, function () {
-          submit.textContent = '분석 승인 완료';
-          document.getElementById('quiz').classList.add('done');
-          var li = document.getElementById('lockind'); li.classList.add('open'); li.innerHTML = OPEN_SVG + 'Unlocked';
-          var box = document.getElementById('results'); box.innerHTML = resultSections(c, ev); box.classList.add('reveal');
-          document.getElementById('stcell').innerHTML = '<span class="tag green">ANALYSIS COMPLETE · 감식 완료</span>';
-          drawVisual(ev, true);
-          document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      } else {
-        st.rejected.push(sel); p[ev.code] = st; saveP(p);
-        var b = opts.querySelector('.opt[data-i="' + sel + '"]'); b.classList.remove('sel'); b.classList.add('rejected'); b.disabled = true;
-        sel = -1; submit.disabled = true;
-        document.getElementById('tries').textContent = 'ATTEMPTS · ' + st.tries;
-        fb.innerHTML = '<div class="reject"><b>Rejected · 의뢰 반려</b>' + esc(o.reason) + '<br><span class="muted" style="font-size:12px">의뢰 항목을 다시 읽고 다른 방법을 골라 보세요.</span></div>';
-      }
+    runAnalysis(document.getElementById('procbox'), ev, function () {
+      st.done = true; p[ev.code] = st; saveP(p);
+      var box = document.getElementById('results'); box.innerHTML = resultSections(c, ev); box.classList.add('reveal');
+      document.getElementById('stcell').innerHTML = '<span class="tag green">ANALYSIS COMPLETE · 감식 완료</span>';
+      drawVisual(ev, true);
     });
   }
 
-  // 승인 후에만 생성되는 결과·추론 영역
+  // 감식 결과·추론 영역
   function resultSections(c, ev) {
     var html = '<section class="panel" id="result">' + ph('Lab analysis', '감식 결과', 'FORENSIC RESULT') + '<div class="pb">';
-    html += '<div class="okcircle"><div class="c"></div><div class="t">Result · Verified<small>감식 완료 · 결과를 보고서의 「감식 기록」에 한 줄로 적으세요</small></div></div>';
-    html += '<div class="res-meta" style="margin-top:12px"><div><b>METHOD</b>' + esc(ev.method) + '</div><div><b>SAMPLE</b>' + esc(ev.sample) + ' · ' + esc(ev.code) + '</div><div><b>REQUEST</b>' + esc(ev.request) + '</div></div>';
-    html += '<ul class="res-list">' + ev.result.map(function (r, i) { return '<li' + (i === 0 ? ' class="key"' : '') + '>' + esc(r) + '</li>'; }).join('') + '</ul>';
+    html += '<div class="okcircle"><div class="c"></div><div class="t">Result · Verified<small>분석 방법 : ' + esc(ev.methodName) + '</small></div></div>';
+    html += '<div class="keybox"><div class="kl">핵심 감식 결과 <span class="mono">KEY FINDING</span></div><div class="kt">' + esc(ev.key) + '</div><div class="kc">→ 이 문장을 최종보고서 「감식 기록」에 옮겨 쓰세요.</div></div>';
+    if (ev.more && ev.more.length) html += '<div class="morelab">함께 확인된 것</div><ul class="res-list">' + ev.more.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>';
     if (ev.link) html += '<div class="linkbox"><div class="lk">추론 연결고리 <span class="mono">LINK</span></div><div class="lt">' + esc(ev.link) + '</div></div>';
     html += '<div class="fig" id="fig"><div class="ft">Analysis data · 감식 데이터</div><div class="scan"></div><div class="hint">◀ ▶ 그림을 옆으로 밀어 전체를 확인하세요</div><div class="sv" id="figsvg"></div><div class="fc" id="figcap"></div></div>';
     html += '</div></section>';
-    html += '<section class="panel" id="infer">' + ph('Inference', '추론 질문', 'FOR THE INVESTIGATION TEAM') + '<div class="pb"><ol class="inf">' + ev.inference.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ol><div class="note">이 결과를 다른 증거와 연결해 사건 과정을 정리해 보세요. 모든 증거를 마치면 최종보고서를 작성합니다.</div></div></section>';
+    html += '<section class="panel" id="infer">' + ph('Inference', '추론 질문', 'FOR THE INVESTIGATION TEAM') + '<div class="pb"><ol class="inf">' + ev.inference.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ol><div class="note">이 결과를 다른 증거와 연결해 사건 과정을 정리해 보세요. 세 증거를 모두 마치면 최종보고서를 작성합니다.</div></div></section>';
     return html;
   }
 
   function runAnalysis(fb, ev, done) {
-    var steps = ['시료 접수 확인 · ' + ev.sample, '시료 준비', '측정 중 · ' + ev.method.split(' ')[0] + '…', '결과 확인', '감식 보고서 만들기'];
+    var steps = ['시료 접수 확인 · ' + ev.sample, '시료 준비', '측정 중 · ' + ev.methodName + '…', '결과 확인', '감식 보고서 만들기'];
     fb.innerHTML = '<div class="proc"><div class="field-tag">ANALYSIS IN PROGRESS · 분석 중</div><ul class="steps">' + steps.map(function (s) { return '<li>' + esc(s) + '<span class="ms"></span></li>'; }).join('') + '</ul><div class="bar"><i id="pbar"></i></div></div>';
     var lis = fb.querySelectorAll('.steps li'); var bar = document.getElementById('pbar'); var i = 0; var t0 = Date.now();
     function next() {
       if (i > 0) { lis[i - 1].classList.remove('run'); lis[i - 1].classList.add('ok'); lis[i - 1].querySelector('.ms').textContent = (Date.now() - t0) + ' ms'; }
       if (i >= lis.length) { bar.style.width = '100%'; setTimeout(done, 250); return; }
       lis[i].classList.add('run'); bar.style.width = Math.round(((i + 1) / lis.length) * 100) + '%'; i++;
-      setTimeout(next, 420 + Math.random() * 300);
+      setTimeout(next, 300 + Math.random() * 200);
     }
     next();
   }

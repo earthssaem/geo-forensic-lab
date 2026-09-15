@@ -41,4 +41,4 @@ dist/
 학생용 앱의 라우터에는 없는 별도 페이지입니다. 수업용으로는 `teacher.html`·`teacher.js`를 배포본에서 빼고 교사 컴퓨터에서만 여는 방법을 권합니다(학생 화면의 동작에는 영향 없음).
 
 ## 그림 자료의 출처 표기
-각 감식 데이터 그림 아래에 「연구 자료를 바탕으로 재구성 — 출처」 또는 「수업용 개념도 — 실제 측정값 아님」이 표시됩니다. 출처가 있는 그림: CASE 03 E-01(Burgess et al. 2014 PNAS; Burgess et al. 2017 Nat. Commun.), E-03(Sun et al. 2012 Science), CASE 05 E-01(Alvarez et al. 1980 Science), E-03(Hildebrand et al. 1991 Geology; Renne et al. 2013 Science).
+실제 연구 자료를 바탕으로 그린 그림에는 아래에 「연구 자료를 바탕으로 재구성 — 출처」가 표시됩니다. 수업용 개념도(CASE 03 E-02, CASE 05 E-02)에는 출처 표기가 없습니다. 출처가 있는 그림: CASE 03 E-01(Burgess et al. 2014 PNAS; Burgess et al. 2017 Nat. Commun.), E-03(Sun et al. 2012 Science), CASE 05 E-01(Alvarez et al. 1980 Science), E-03(Hildebrand et al. 1991 Geology; Renne et al. 2013 Science).

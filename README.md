@@ -37,6 +37,8 @@ dist/
 ## 문구 수정
 `data.js`의 각 증거 객체에서 `title`, `observation`(카드 앞면과 동일), `cardQuestion`, `request`, `methodName`/`methodNote`(분석 방법 이름·한 줄 풀이), `key`(학생이 「감식 기록」에 그대로 옮겨 쓰는 핵심 문장), `more`(함께 확인된 것), `link`, `inference` 를 수정하면 됩니다. 시각 자료는 `app.js`의 `VIS` 객체(증거별 함수)에 있습니다.
 
+푸터의 저작권 표시는 `data.js`의 `lab.copyright` 문구를 수정하면 모든 페이지(학생용·교사용·오류 페이지)에 함께 반영됩니다.
+
 ## teacher.html
 학생용 앱의 라우터에는 없는 별도 페이지입니다. 수업용으로는 `teacher.html`·`teacher.js`를 배포본에서 빼고 교사 컴퓨터에서만 여는 방법을 권합니다(학생 화면의 동작에는 영향 없음).
 

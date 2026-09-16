@@ -247,6 +247,7 @@ button { font-family: inherit; }
 /* 하단 내비 */
 .foot { margin-top: 22px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; color: var(--text-3); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--edge-2); padding-top: 12px; }
 .foot a { color: var(--text-2); }
+.foot .copy { flex: 1 0 100%; text-align: center; color: var(--text-3); letter-spacing: .06em; padding-top: 6px; border-top: 1px dashed var(--edge); }
 
 /* ── 메인(접수) 페이지 ─────────────────────── */
 .hero { padding: 8px 2px 0; }

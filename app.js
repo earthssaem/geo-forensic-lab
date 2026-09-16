@@ -50,7 +50,7 @@
     return '<header class="lab-head"><div class="in"><a href="#/" style="text-decoration:none"><div class="lab-name">' + esc(D.lab.name) + '<small>' + esc(D.lab.en) + '</small></div></a>' + badge + '</div></header>';
   }
   function footNav(extra) {
-    return '<div class="foot"><span>' + esc(D.lab.en) + ' · CLASSIFICATION: RESTRICTED</span><span>' + (extra || '') + '<a href="#/">접수 시스템 메인</a></span></div>';
+    return '<div class="foot"><span>' + esc(D.lab.en) + ' · CLASSIFICATION: RESTRICTED</span><span>' + (extra || '') + '<a href="#/">접수 시스템 메인</a></span>' + (D.lab.copyright ? '<span class="copy">' + esc(D.lab.copyright) + '</span>' : '') + '</div>';
   }
 
   /* ── 메인(접수) 페이지 ────────────────── */
@@ -89,7 +89,7 @@
   }
 
   function renderNotFound() {
-    app.innerHTML = labHead(null) + '<main class="wrap"><section class="panel">' + ph('Error', '접수 오류', 'NOT FOUND') + '<div class="pb"><p>해당 주소의 증거 기록이 없습니다.</p><a class="btn small" href="#/" style="text-decoration:none;display:inline-block">Main</a></div></section></main>';
+    app.innerHTML = labHead(null) + '<main class="wrap"><section class="panel">' + ph('Error', '접수 오류', 'NOT FOUND') + '<div class="pb"><p>해당 주소의 증거 기록이 없습니다.</p><a class="btn small" href="#/" style="text-decoration:none;display:inline-block">Main</a></div></section>' + footNav('') + '</main>';
   }
 
   /* ── 증거 분석 페이지 ─────────────────── */

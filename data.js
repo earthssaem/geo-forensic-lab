@@ -8,7 +8,7 @@ window.LAB_DATA = {
     name: '지질시대 감식연구소',
     en: 'GEOLOGIC TIME FORENSIC LABORATORY',
     bureau: '지질시대 대멸종 사건 수사국',
-    copyright: '© 2026 earthssaem. All rights reserved.'
+    copyright: '© 2026 제작: 김연경(earthssaem@gmail.com)'
   },
   cases: [
     {

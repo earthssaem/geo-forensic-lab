@@ -50,14 +50,14 @@
     return '<header class="lab-head"><div class="in"><a href="#/" style="text-decoration:none"><div class="lab-name">' + esc(D.lab.name) + '<small>' + esc(D.lab.en) + '</small></div></a>' + badge + '</div></header>';
   }
   function footNav(extra) {
-    return '<div class="foot"><span>' + esc(D.lab.en) + ' · CLASSIFICATION: RESTRICTED</span><span>' + (extra || '') + '<a href="#/">접수 시스템 메인</a></span></div>';
+    return '<div class="foot"><span>' + esc(D.lab.en) + ' · CLASSIFICATION: RESTRICTED</span><span>' + (extra || '') + '<a href="#/">접수 시스템 메인</a></span>' + (D.lab.copyright ? '<span class="copy">' + esc(D.lab.copyright) + '</span>' : '') + '</div>';
   }
 
   /* ── 메인(접수) 페이지 ────────────────── */
   function renderHome(focus) {
     var p = loadP();
     var html = labHead(null) + '<main class="wrap">';
-    html += '<div class="hero"><h1>시료 접수 시스템<small>SAMPLE INTAKE · ANALYSIS REQUEST TERMINAL</small></h1><p>증거 카드 뒷면의 QR을 찍으면 그 증거의 감식 결과 페이지가 열립니다. QR이 안 되면 아래에 <b>분석 코드</b>를 입력하세요.</p></div>';
+    html += '<div class="hero"><h1>시료 접수 시스템<small>SAMPLE INTAKE · ANALYSIS REQUEST TERMINAL</small></h1><p>현장 조사 보고서 뒷면의 QR을 찍으면 그 증거의 감식 결과 페이지가 열립니다. QR이 안 되면 아래에 <b>분석 코드</b>를 입력하세요.</p></div>';
     html += '<section class="panel">' + ph('Code', '분석 코드 입력', 'ANALYSIS CODE') + '<div class="pb"><form class="codeform" id="codeform"><input id="codein" placeholder="예: CASE03-E01" autocomplete="off" spellcheck="false"><button class="btn small" type="submit">접수 확인</button></form><div id="codemsg" class="attempts" style="margin-top:8px"></div></div></section>';
     D.cases.forEach(function (c, ci) {
       html += '<section class="panel" id="' + c.id + '">' + ph('Case ' + c.no, esc(c.name), esc(c.en)) + '<div class="pb">';
@@ -83,13 +83,13 @@
         var c = findCase('case' + m[1]); var ev = c && findEv(c, 'e' + m[2]);
         if (ev) { location.hash = '#/' + c.id + '/' + ev.id; return; }
       }
-      msg.innerHTML = '<span class="red">ERROR · 등록되지 않은 분석 코드입니다. 카드 뒷면의 코드를 확인하세요.</span>';
+      msg.innerHTML = '<span class="red">ERROR · 등록되지 않은 분석 코드입니다. 현장 조사 보고서 뒷면의 코드를 확인하세요.</span>';
     });
     if (focus) { var el = document.getElementById(focus); if (el) el.scrollIntoView(); }
   }
 
   function renderNotFound() {
-    app.innerHTML = labHead(null) + '<main class="wrap"><section class="panel">' + ph('Error', '접수 오류', 'NOT FOUND') + '<div class="pb"><p>해당 주소의 증거 기록이 없습니다.</p><a class="btn small" href="#/" style="text-decoration:none;display:inline-block">Main</a></div></section></main>';
+    app.innerHTML = labHead(null) + '<main class="wrap"><section class="panel">' + ph('Error', '접수 오류', 'NOT FOUND') + '<div class="pb"><p>해당 주소의 증거 기록이 없습니다.</p><a class="btn small" href="#/" style="text-decoration:none;display:inline-block">Main</a></div></section>' + footNav('') + '</main>';
   }
 
   /* ── 증거 분석 페이지 ─────────────────── */
@@ -134,12 +134,12 @@
   function resultSections(c, ev) {
     var html = '<section class="panel" id="result">' + ph('Lab analysis', '감식 결과', 'FORENSIC RESULT') + '<div class="pb">';
     html += '<div class="okcircle"><div class="c"></div><div class="t">Result · Verified<small>분석 방법 : ' + esc(ev.methodName) + '</small></div></div>';
-    html += '<div class="keybox"><div class="kl">핵심 감식 결과 <span class="mono">KEY FINDING</span></div><div class="kt">' + esc(ev.key) + '</div></div>';
+    html += '<div class="keybox"><div class="kl">핵심 감식 결과 <span class="mono">KEY FINDING</span></div><div class="kt">' + esc(ev.key) + '</div><div class="kc">→ 최종보고서 「01 감식 기록」에 기록하세요.</div></div>';
     if (ev.more && ev.more.length) html += '<div class="morelab">함께 확인된 것</div><ul class="res-list">' + ev.more.map(function (r) { return '<li>' + esc(r) + '</li>'; }).join('') + '</ul>';
     if (ev.link) html += '<div class="linkbox"><div class="lk">추론 연결고리 <span class="mono">LINK</span></div><div class="lt">' + esc(ev.link) + '</div></div>';
     html += '<div class="fig" id="fig"><div class="ft">Analysis data · 감식 데이터</div><div class="scan"></div><div class="hint">◀ ▶ 그림을 옆으로 밀어 전체를 확인하세요</div><div class="sv" id="figsvg"></div><div class="fc" id="figcap"></div></div>';
     html += '</div></section>';
-    html += '<section class="panel" id="infer">' + ph('Inference', '추론 질문', 'FOR THE INVESTIGATION TEAM') + '<div class="pb"><ol class="inf">' + ev.inference.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ol><div class="note">이 결과를 다른 증거와 연결해 사건 과정을 정리해 보세요. 세 증거를 모두 마치면 최종보고서를 작성합니다.</div></div></section>';
+    html += '<section class="panel" id="infer">' + ph('Inference', '추론 질문', 'INFERENCE · ONE QUESTION') + '<div class="pb">' + ev.inference.map(function (q, i) { return '<div class="qbox"><div class="ql">추론 질문 <span class="mono">Q' + (i + 1) + '</span></div><div class="qt">' + esc(q) + '</div></div>'; }).join('') + '<div class="note">감식 결과를 바탕으로 위 질문에 답하고, 최종보고서 「02 증거별 추론」에 한 문장으로 기록하세요. 세 증거를 모두 마치면 수사국(교탁)에 감식 완료를 보고합니다.</div></div></section>';
     return html;
   }
 
